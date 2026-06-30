@@ -239,6 +239,16 @@ function pinSvg(color){
 let activeBillboard = null;
 let map, markersLayer, polygonsLayer;
 
+function panToReveal(bb){
+  if(!map) return;
+  const cardEl = document.getElementById('card');
+  const cardWidth = cardEl.offsetWidth || 340;
+  // сдвигаем точку влево в системе координат пикселей, чтобы она не пряталась под карточкой справа
+  const targetPoint = map.project([bb.lat, bb.lon], map.getZoom()).subtract([ (cardWidth/2) + 30, 0 ]);
+  const targetLatLng = map.unproject(targetPoint, map.getZoom());
+  map.panTo(targetLatLng, { animate: true, duration: 0.35 });
+}
+
 function openCard(bb){
   activeBillboard = bb;
   const st = getStatus(bb);
@@ -415,13 +425,15 @@ async function initMap(){
       iconAnchor: [15, 34]
     });
     const marker = L.marker([bb.lat, bb.lon], { icon });
-    marker.on('click', () => openCard(bb));
+    marker.on('click', () => { openCard(bb); panToReveal(bb); });
     bb.__marker = marker;
     marker.addTo(markersLayer);
   });
+  markersLayer.addTo(map);
+  map.on('click', () => {
+    document.getElementById('card').classList.remove('show');
+  });
 }
-
-initMap();
 populateDistrictFilter();
 
 document.getElementById('districtFilter').addEventListener('change', (e) => {
