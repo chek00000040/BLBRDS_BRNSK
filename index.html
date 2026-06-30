@@ -70,7 +70,7 @@
     position:absolute; top:18px; right:18px; width:340px; max-width:90vw;
     background:var(--panel); border:1px solid var(--line); border-left:4px solid var(--accent);
     border-radius:6px; box-shadow:0 12px 30px rgba(0,0,0,.5);
-    z-index:30; display:none; overflow:hidden;
+    z-index:1100; display:none; overflow:hidden;
   }
   #card.show{ display:block; }
   #card .photo{
@@ -236,8 +236,32 @@ function pinSvg(color){
   </svg>`;
 }
 
+function pinSvgActive(color){
+  return `<svg class="billboard-pin" viewBox="0 0 38 42" xmlns="http://www.w3.org/2000/svg">
+    <rect x="1" y="1" width="36" height="20" rx="3" fill="${color}" stroke="#ffffff" stroke-width="2.5"/>
+    <rect x="1" y="1" width="36" height="20" rx="3" fill="none" stroke="#ff7a1a" stroke-width="1.5" opacity="0.8"/>
+    <line x1="11" y1="21" x2="8" y2="40" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round"/>
+    <line x1="27" y1="21" x2="30" y2="40" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round"/>
+    <line x1="9" y1="7" x2="29" y2="7" stroke="#14110f" stroke-width="1" opacity=".5"/>
+    <line x1="9" y1="12" x2="29" y2="12" stroke="#14110f" stroke-width="1" opacity=".5"/>
+    <line x1="9" y1="17" x2="24" y2="17" stroke="#14110f" stroke-width="1" opacity=".5"/>
+  </svg>`;
+}
+
 let activeBillboard = null;
+let activeMarkerBb = null;
 let map, markersLayer, polygonsLayer;
+
+function setMarkerActive(bb, active){
+  if(!bb || !bb.__marker) return;
+  const st = getStatus(bb);
+  const color = st.busy ? '#e2462f' : '#4caf6e';
+  const html = active ? pinSvgActive(color) : pinSvg(color);
+  const size = active ? [38, 42] : [30, 34];
+  const anchor = active ? [19, 42] : [15, 34];
+  bb.__marker.setIcon(L.divIcon({ className:'', html, iconSize: size, iconAnchor: anchor }));
+  bb.__marker.setZIndexOffset(active ? 1000 : 0);
+}
 
 function panToReveal(bb){
   if(!map) return;
@@ -250,6 +274,9 @@ function panToReveal(bb){
 }
 
 function openCard(bb){
+  if(activeMarkerBb && activeMarkerBb !== bb) setMarkerActive(activeMarkerBb, false);
+  activeMarkerBb = bb;
+  setMarkerActive(bb, true);
   activeBillboard = bb;
   const st = getStatus(bb);
   document.getElementById('cardId').textContent = bb.id.toUpperCase();
@@ -285,6 +312,7 @@ function formatDate(iso){
 }
 
 document.getElementById('cardClose').onclick = () => {
+  if(activeMarkerBb) { setMarkerActive(activeMarkerBb, false); activeMarkerBb = null; }
   document.getElementById('card').classList.remove('show');
 };
 
@@ -431,6 +459,7 @@ async function initMap(){
   });
   markersLayer.addTo(map);
   map.on('click', () => {
+    if(activeMarkerBb) { setMarkerActive(activeMarkerBb, false); activeMarkerBb = null; }
     document.getElementById('card').classList.remove('show');
   });
 }
