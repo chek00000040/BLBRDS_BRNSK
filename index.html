@@ -257,7 +257,9 @@ let activeMarkerBb = null;
 let map, markersLayer, polygonsLayer;
 
 function setMarkerActive(bb, active){
-  if(!bb || !bb.__marker) return;
+  if(!bb) return;
+  if(window.__engine === 'yandex'){ setMarkerActiveYandex(bb, active); return; }
+  if(!bb.__marker) return;
   const st = getStatus(bb);
   const color = st.busy ? '#e2462f' : '#4caf6e';
   const html = active ? pinSvgActive(color) : pinSvg(color);
@@ -268,13 +270,10 @@ function setMarkerActive(bb, active){
 }
 
 function panToReveal(bb){
-  if(!map) return;
-  const cardEl = document.getElementById('card');
-  const cardWidth = cardEl.offsetWidth || 340;
-  // сдвигаем точку влево в системе координат пикселей, чтобы она не пряталась под карточкой справа
-  const targetPoint = map.project([bb.lat, bb.lon], map.getZoom()).subtract([ (cardWidth/2) + 30, 0 ]);
-  const targetLatLng = map.unproject(targetPoint, map.getZoom());
-  map.panTo(targetLatLng, { animate: true, duration: 0.35 });
+  if(!map || window.__engine !== 'osm') return;
+  const cardWidth = document.getElementById('card').offsetWidth || 340;
+  const targetPoint = map.project([bb.lat, bb.lon], map.getZoom()).subtract([(cardWidth/2) + 30, 0]);
+  map.panTo(map.unproject(targetPoint, map.getZoom()), { animate:true, duration:0.35 });
 }
 
 function openCard(bb){
@@ -420,91 +419,204 @@ async function loadLiveData(){
   }
 }
 
-// ====== LEAFLET / OSM INIT ======
-async function initMap(){
-  await loadLiveData();
-
+// ====== ДВИЖОК: OSM (Leaflet) ======
+async function initMapOSM(){
   map = L.map('map', { zoomControl: true }).setView([53.295, 34.30], 12);
-
-  const osmLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: '&copy; OpenStreetMap contributors',
-    maxZoom: 19
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '&copy; OpenStreetMap contributors', maxZoom: 19
   }).addTo(map);
 
-  window.__mapLayers = { osm: osmLayer };
-
   polygonsLayer = L.layerGroup().addTo(map);
-  markersLayer = L.layerGroup().addTo(map);
+  markersLayer  = L.layerGroup().addTo(map);
 
-  // district polygons
   DISTRICTS_GEOJSON.features.forEach(f => {
-    const color = (DISTRICT_COLORS[f.properties.name] || '#88888855').slice(0,7);
-    const layer = L.geoJSON(f, {
-      style: { color: '#1c1814', weight: 2, fillColor: color, fillOpacity: 0.35 }
-    });
-    layer.bindTooltip(f.properties.name, { sticky: true });
-    layer.addTo(polygonsLayer);
+    const color = (DISTRICT_COLORS[f.properties.name] || '#888888').slice(0,7);
+    L.geoJSON(f, { style:{ color:'#1c1814', weight:2, fillColor:color, fillOpacity:0.35 } })
+      .bindTooltip(f.properties.name, { sticky:true })
+      .addTo(polygonsLayer);
   });
 
-  // markers
   BILLBOARDS.forEach(bb => {
     const st = getStatus(bb);
     const color = st.busy ? '#e2462f' : '#4caf6e';
-    const icon = L.divIcon({
-      className: '',
-      html: pinSvg(color),
-      iconSize: [30, 34],
-      iconAnchor: [15, 34]
-    });
+    const icon = L.divIcon({ className:'', html:pinSvg(color), iconSize:[30,34], iconAnchor:[15,34] });
     const marker = L.marker([bb.lat, bb.lon], { icon });
     marker.on('click', () => { openCard(bb); panToReveal(bb); });
     bb.__marker = marker;
     marker.addTo(markersLayer);
   });
-  markersLayer.addTo(map);
+
   map.on('click', () => {
-    if(activeMarkerBb) { setMarkerActive(activeMarkerBb, false); activeMarkerBb = null; }
+    if(activeMarkerBb){ setMarkerActive(activeMarkerBb, false); activeMarkerBb = null; }
     document.getElementById('card').classList.remove('show');
   });
 }
 
-initMap();
-populateDistrictFilter();
+// ====== ДВИЖОК: Яндекс Карты v3 ======
+function loadYandexScript(apikey){
+  return new Promise((resolve, reject) => {
+    if(window.ymaps3){ resolve(); return; }
+    const s = document.createElement('script');
+    s.src = `https://api-maps.yandex.ru/v3/?apikey=${apikey}&lang=ru_RU`;
+    s.onload = resolve;
+    s.onerror = reject;
+    document.head.appendChild(s);
+  });
+}
 
-// автообновление данных каждые 5 минут — менеджер правит таблицу, клиент видит актуальное
-setInterval(async () => {
-  await loadLiveData();
-  // перекрашиваем маркеры под новые статусы
+async function initMapYandex(apikey){
+  await loadYandexScript(apikey);
+  await ymaps3.ready;
+  const { YMap, YMapDefaultSchemeLayer, YMapDefaultFeaturesLayer, YMapMarker, YMapFeature } = ymaps3;
+
+  map = new YMap(document.getElementById('map'), {
+    location:{ center:[34.30, 53.295], zoom:12 }
+  });
+  map.addChild(new YMapDefaultSchemeLayer({}));
+  map.addChild(new YMapDefaultFeaturesLayer({}));
+
+  // полигоны районов
+  DISTRICTS_GEOJSON.features.forEach(f => {
+    const color = (DISTRICT_COLORS[f.properties.name] || '#88888855').slice(0,7);
+    const multiCoords = f.geometry.type === 'MultiPolygon' ? f.geometry.coordinates : [f.geometry.coordinates];
+    multiCoords.forEach(poly => {
+      map.addChild(new YMapFeature({
+        geometry:{ type:'Polygon', coordinates:poly },
+        style:{ fill:color+'88', stroke:[{ color:'#1c1814', width:2 }] }
+      }));
+    });
+  });
+
+  // маркеры
   BILLBOARDS.forEach(bb => {
-    if(!bb.__marker) return;
-    const isActive = bb === activeMarkerBb;
     const st = getStatus(bb);
     const color = st.busy ? '#e2462f' : '#4caf6e';
-    const html = isActive ? pinSvgActive(color) : pinSvg(color);
-    const size = isActive ? [38,42] : [30,34];
-    const anchor = isActive ? [19,42] : [15,34];
-    bb.__marker.setIcon(L.divIcon({ className:'', html, iconSize:size, iconAnchor:anchor }));
+    const el = document.createElement('div');
+    el.innerHTML = pinSvg(color);
+    el.style.cursor = 'pointer';
+    el.addEventListener('click', (e) => { e.stopPropagation(); openCard(bb); panToRevealYandex(bb); });
+    const marker = new YMapMarker({ coordinates:[bb.lon, bb.lat] }, el);
+    bb.__marker_el = el;
+    bb.__marker_ym = marker;
+    map.addChild(marker);
   });
-}, 5 * 60 * 1000);
+
+  // клик по карте — закрыть карточку
+  map.addChild(new (ymaps3.YMapListener)({
+    layer:'any',
+    onClick: () => {
+      if(activeMarkerBb){ setMarkerActiveYandex(activeMarkerBb, false); activeMarkerBb = null; }
+      document.getElementById('card').classList.remove('show');
+    }
+  }));
+
+  window.__engine = 'yandex';
+}
+
+function panToRevealYandex(bb){
+  if(!map || window.__engine !== 'yandex') return;
+  const cardWidth = document.getElementById('card').offsetWidth || 340;
+  map.update({ location:{ center:[bb.lon - 0.02, bb.lat], duration:350 } });
+}
+
+function setMarkerActiveYandex(bb, active){
+  if(!bb || !bb.__marker_el) return;
+  const st = getStatus(bb);
+  const color = st.busy ? '#e2462f' : '#4caf6e';
+  bb.__marker_el.innerHTML = active ? pinSvgActive(color) : pinSvg(color);
+}
+
+// ====== ОПРЕДЕЛЕНИЕ СТРАНЫ И ЗАПУСК ======
+const YMAPS_KEY = '9597c78a-f9bc-4e0e-b06f-83f14d477e3b';
+
+async function detectCountry(){
+  // 1. Если пользователь уже выбрал руками — уважаем его выбор
+  const saved = localStorage.getItem('mapEngine');
+  if(saved) return saved;
+  // 2. Гео-детект через бесплатный IP API (таймаут 3с)
+  try{
+    const ctrl = new AbortController();
+    setTimeout(() => ctrl.abort(), 3000);
+    const r = await fetch('https://ipapi.co/json/', { signal: ctrl.signal });
+    const d = await r.json();
+    return d.country_code === 'RU' ? 'yandex' : 'osm';
+  } catch(e){
+    return 'osm'; // fallback: OSM — работает везде
+  }
+}
+
+function setEngineButtons(engine){
+  document.getElementById('btnYandex').classList.toggle('active', engine === 'yandex');
+  document.getElementById('btnOsm').classList.toggle('active', engine === 'osm');
+}
+
+async function startMap(){
+  await loadLiveData();
+  const engine = await detectCountry();
+  window.__engine = engine;
+  setEngineButtons(engine);
+
+  if(engine === 'yandex'){
+    try{
+      await initMapYandex(YMAPS_KEY);
+    } catch(e){
+      console.warn('Яндекс Карты не загрузились, переключаюсь на OSM:', e);
+      window.__engine = 'osm';
+      setEngineButtons('osm');
+      document.getElementById('map').innerHTML = '';
+      await initMapOSM();
+    }
+  } else {
+    await initMapOSM();
+  }
+}
+
+// ====== КНОПКИ ПЕРЕКЛЮЧЕНИЯ ======
+document.getElementById('btnYandex').addEventListener('click', async function(){
+  if(window.__engine === 'yandex') return;
+  localStorage.setItem('mapEngine','yandex');
+  location.reload();
+});
+document.getElementById('btnOsm').addEventListener('click', async function(){
+  if(window.__engine === 'osm') return;
+  localStorage.setItem('mapEngine','osm');
+  location.reload();
+});
+
+startMap();
+populateDistrictFilter();
 
 document.getElementById('districtFilter').addEventListener('change', (e) => {
   const val = e.target.value;
   BILLBOARDS.forEach(bb => {
-    if(!bb.__marker) return;
-    const onMap = markersLayer.hasLayer(bb.__marker);
     const show = !val || bb.district === val;
-    if(show && !onMap) markersLayer.addLayer(bb.__marker);
-    if(!show && onMap) markersLayer.removeLayer(bb.__marker);
+    if(window.__engine === 'osm' && bb.__marker){
+      const onMap = markersLayer.hasLayer(bb.__marker);
+      if(show && !onMap) markersLayer.addLayer(bb.__marker);
+      if(!show && onMap) markersLayer.removeLayer(bb.__marker);
+    } else if(window.__engine === 'yandex' && bb.__marker_el){
+      bb.__marker_el.parentElement.style.display = show ? '' : 'none';
+    }
   });
 });
 
-// Кнопка "Яндекс" — пока отключена, т.к. Яндекс Карты блокируются у части пользователей.
-// OSM работает как основной и единственный активный движок в этой версии.
-document.getElementById('btnYandex').addEventListener('click', function(){
-  alert('Яндекс Карты временно отключены как движок по умолчанию — у части пользователей домен api-maps.yandex.ru блокируется (сеть/блокировщики). Сейчас карта работает на OpenStreetMap. Кнопку оставил на будущее, если решим вернуть Яндекс как опцию.');
-});
-document.getElementById('btnOsm').classList.add('active');
-document.getElementById('btnYandex').classList.remove('active');
+// автообновление данных каждые 5 минут
+setInterval(async () => {
+  await loadLiveData();
+  BILLBOARDS.forEach(bb => {
+    const isActive = bb === activeMarkerBb;
+    const st = getStatus(bb);
+    const color = st.busy ? '#e2462f' : '#4caf6e';
+    if(window.__engine === 'osm' && bb.__marker){
+      const html = isActive ? pinSvgActive(color) : pinSvg(color);
+      const size = isActive ? [38,42] : [30,34];
+      const anchor = isActive ? [19,42] : [15,34];
+      bb.__marker.setIcon(L.divIcon({ className:'', html, iconSize:size, iconAnchor:anchor }));
+    } else if(window.__engine === 'yandex' && bb.__marker_el){
+      bb.__marker_el.innerHTML = isActive ? pinSvgActive(color) : pinSvg(color);
+    }
+  });
+}, 5 * 60 * 1000);
 </script>
 </body>
 </html>
