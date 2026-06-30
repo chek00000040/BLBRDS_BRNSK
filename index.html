@@ -213,8 +213,12 @@ const DISTRICT_COLORS = {
 function todayISO(){ return new Date().toISOString().slice(0,10); }
 
 function getStatus(bb){
-  // занято, если сегодня внутри [busy_from, busy_to]
   const today = todayISO();
+  // занято, если статус явно выставлен в busy
+  if(bb.status === 'busy'){
+    return { busy:true, until: bb.busy_to || '' };
+  }
+  // занято, если сегодня внутри [busy_from, busy_to]
   if(bb.busy_from && bb.busy_to && bb.busy_from <= today && today <= bb.busy_to){
     return { busy:true, until: bb.busy_to };
   }
@@ -466,6 +470,22 @@ async function initMap(){
 
 initMap();
 populateDistrictFilter();
+
+// автообновление данных каждые 5 минут — менеджер правит таблицу, клиент видит актуальное
+setInterval(async () => {
+  await loadLiveData();
+  // перекрашиваем маркеры под новые статусы
+  BILLBOARDS.forEach(bb => {
+    if(!bb.__marker) return;
+    const isActive = bb === activeMarkerBb;
+    const st = getStatus(bb);
+    const color = st.busy ? '#e2462f' : '#4caf6e';
+    const html = isActive ? pinSvgActive(color) : pinSvg(color);
+    const size = isActive ? [38,42] : [30,34];
+    const anchor = isActive ? [19,42] : [15,34];
+    bb.__marker.setIcon(L.divIcon({ className:'', html, iconSize:size, iconAnchor:anchor }));
+  });
+}, 5 * 60 * 1000);
 
 document.getElementById('districtFilter').addEventListener('change', (e) => {
   const val = e.target.value;
