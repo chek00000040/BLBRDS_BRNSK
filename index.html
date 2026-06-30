@@ -457,7 +457,7 @@ function loadYandexScript(apikey){
   return new Promise((resolve, reject) => {
     if(window.ymaps3){ resolve(); return; }
     const s = document.createElement('script');
-    s.src = `https://api-maps.yandex.ru/v3/?apikey=${9c9568d5-e8ef-4e41-9002-fa605dc1fef3}&lang=ru_RU`;
+    s.src = `https://api-maps.yandex.ru/v3/?apikey=${apikey}&lang=ru_RU`;
     s.onload = resolve;
     s.onerror = reject;
     document.head.appendChild(s);
@@ -527,7 +527,7 @@ function setMarkerActiveYandex(bb, active){
 }
 
 // ====== ОПРЕДЕЛЕНИЕ СТРАНЫ И ЗАПУСК ======
-const YMAPS_KEY = '9597c78a-f9bc-4e0e-b06f-83f14d477e3b';
+const YMAPS_KEY = '9c9568d5-e8ef-4e41-9002-fa605dc1fef3';
 
 async function detectCountry(){
   // 1. Если пользователь уже выбрал руками — уважаем его выбор
