@@ -303,159 +303,26 @@ const DISTRICTS_GEOJSON = {"type": "FeatureCollection", "features": [{"type": "F
 const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyxqg7CD9KchKQVcjfpCozHiHprNKqIE16cYo92iexG8iv-wTDNE7ZiLkSkJW0CyT2x/exec";
 const YMAPS_KEY = "e2cf8129-ff43-4729-b542-1591d12b5fef";
 
-// ========== ICON SVGs ==========
-const ICON_FREE   = `<?xml version="1.0" encoding="UTF-8"?>
-<svg id="_Слой_1" data-name="Слой 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 23 45.51">
-  <defs>
-    <style>
-      .cls-1 {
-        fill: #989696;
-      }
-
-      .cls-1, .cls-2, .cls-3, .cls-4 {
-        stroke-width: 0px;
-      }
-
-      .cls-2 {
-        fill: #0069a2;
-      }
-
-      .cls-3 {
-        fill: #fff;
-      }
-
-      .cls-4 {
-        fill: #d9d9d9;
-      }
-
-      .cls-5 {
-        opacity: .46;
-      }
-    </style>
-  </defs>
-  <g class="cls-5">
-    <path class="cls-1" d="m20,43.78c0,1.1-3.81,1-8.5,1s-8.5.1-8.5-1,3.81-2,8.5-2,8.5.89,8.5,2Z"/>
-  </g>
-  <rect class="cls-4" x="1" y="18.74" width="21" height="12.41"/>
-  <rect class="cls-3" x="9.59" y="31.15" width="3.82" height="13.36"/>
-  <polygon class="cls-2" points="23 32.15 0 32.15 0 17.78 2 17.78 2 30.15 21 30.15 21 17.78 23 17.78 23 32.15"/>
-  <path class="cls-2" d="m15.8,45.51H7.2v-2h1.39v-12.36h2v12.36h1.82v-12.36h2v12.36h1.39v2Zm5.25-25.77h-1.91v-2h1.91v2Zm-2.86,0h-1.91v-2h1.91v2Zm-2.86,0h-7.64v-2h7.64v2Zm-8.59,0h-1.91v-2h1.91v2Zm-2.86,0H1v-2h2.86v2Z"/>
-</svg>`;
-const ICON_BUSY   = `<?xml version="1.0" encoding="UTF-8"?>
-<svg id="_Слой_1" data-name="Слой 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 23 45.51">
-  <defs>
-    <style>
-      .cls-1 {
-        fill: #989696;
-      }
-
-      .cls-1, .cls-2, .cls-3, .cls-4 {
-        stroke-width: 0px;
-      }
-
-      .cls-3 {
-        fill: #fff;
-      }
-
-      .cls-4 {
-        fill: #d9d9d9;
-      }
-
-      .cls-5 {
-        opacity: .46;
-      }
-    </style>
-  </defs>
-  <g class="cls-5">
-    <path class="cls-1" d="m20,43.78c0,1.1-3.81,1-8.5,1s-8.5.1-8.5-1,3.81-2,8.5-2,8.5.89,8.5,2Z"/>
-  </g>
-  <rect class="cls-4" x="1" y="18.74" width="21" height="12.41"/>
-  <rect class="cls-3" x="9.59" y="31.15" width="3.82" height="13.36"/>
-  <polygon class="cls-2" points="23 32.15 0 32.15 0 17.78 2 17.78 2 30.15 21 30.15 21 17.78 23 17.78 23 32.15"/>
-  <path class="cls-2" d="m15.8,45.51H7.2v-2h1.39v-12.36h2v12.36h1.82v-12.36h2v12.36h1.39v2Zm5.25-25.77h-1.91v-2h1.91v2Zm-2.86,0h-1.91v-2h1.91v2Zm-2.86,0h-7.64v-2h7.64v2Zm-8.59,0h-1.91v-2h1.91v2Zm-2.86,0H1v-2h2.86v2Z"/>
-</svg>`;
-const ICON_SELECT = `<?xml version="1.0" encoding="UTF-8"?>
-<svg id="_Слой_1" data-name="Слой 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 23 45.51">
-  <defs>
-    <style>
-      .cls-1 {
-        fill: #989696;
-      }
-
-      .cls-1, .cls-2, .cls-3, .cls-4 {
-        stroke-width: 0px;
-      }
-
-      .cls-2 {
-        fill: #fff;
-      }
-
-      .cls-3 {
-        fill: #ba0000;
-      }
-
-      .cls-4 {
-        fill: #d9d9d9;
-      }
-
-      .cls-5 {
-        opacity: .46;
-      }
-    </style>
-  </defs>
-  <g class="cls-5">
-    <path class="cls-1" d="m20,43.78c0,1.1-3.81,1-8.5,1s-8.5.1-8.5-1,3.81-2,8.5-2,8.5.89,8.5,2Z"/>
-  </g>
-  <rect class="cls-4" x="1" y="18.74" width="21" height="12.41"/>
-  <rect class="cls-2" x="9.59" y="31.15" width="3.82" height="13.36"/>
-  <polygon class="cls-3" points="23 32.15 0 32.15 0 17.78 2 17.78 2 30.15 21 30.15 21 17.78 23 17.78 23 32.15"/>
-  <path class="cls-3" d="m15.8,45.51H7.2v-2h1.39v-12.36h2v12.36h1.82v-12.36h2v12.36h1.39v2Zm5.25-25.77h-1.91v-2h1.91v2Zm-2.86,0h-1.91v-2h1.91v2Zm-2.86,0h-7.64v-2h7.64v2Zm-8.59,0h-1.91v-2h1.91v2Zm-2.86,0H1v-2h2.86v2Z"/>
-  <polygon class="cls-3" points="10.92 9.05 3.29 1.41 4.71 0 10.92 6.22 17.14 0 18.56 1.41 10.92 9.05"/>
-  <polygon class="cls-3" points="10.92 14.05 3.29 6.41 4.71 5 10.92 11.22 17.14 5 18.56 6.41 10.92 14.05"/>
-</svg>`;
-const ICON_FAKE   = `<?xml version="1.0" encoding="UTF-8"?>
-<svg id="_Слой_1" data-name="Слой 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 23 45.51">
-  <defs>
-    <style>
-      .cls-1 {
-        fill: #989696;
-      }
-
-      .cls-1, .cls-2, .cls-3, .cls-4 {
-        stroke-width: 0px;
-      }
-
-      .cls-2 {
-        fill: #fff;
-      }
-
-      .cls-3 {
-        fill: #d9d9d9;
-      }
-
-      .cls-4 {
-        fill: #8a8a8a;
-      }
-
-      .cls-5 {
-        opacity: .46;
-      }
-    </style>
-  </defs>
-  <g class="cls-5">
-    <path class="cls-1" d="m20,43.78c0,1.1-3.81,1-8.5,1s-8.5.1-8.5-1,3.81-2,8.5-2,8.5.89,8.5,2Z"/>
-  </g>
-  <rect class="cls-3" x="1" y="18.74" width="21" height="12.41"/>
-  <rect class="cls-2" x="9.59" y="31.15" width="3.82" height="13.36"/>
-  <polygon class="cls-4" points="23 32.15 0 32.15 0 17.78 2 17.78 2 30.15 21 30.15 21 17.78 23 17.78 23 32.15"/>
-  <path class="cls-4" d="m15.8,45.51H7.2v-2h1.39v-12.36h2v12.36h1.82v-12.36h2v12.36h1.39v2Zm5.25-25.77h-1.91v-2h1.91v2Zm-2.86,0h-1.91v-2h1.91v2Zm-2.86,0h-7.64v-2h7.64v2Zm-8.59,0h-1.91v-2h1.91v2Zm-2.86,0H1v-2h2.86v2Z"/>
-  <path class="cls-4" d="m10.46,26.69v-.14c0-.5.05-.89.13-1.19.09-.3.21-.53.38-.72.17-.18.37-.35.61-.49.18-.11.33-.23.47-.35.14-.12.25-.26.33-.41.08-.15.12-.32.12-.5,0-.2-.05-.37-.14-.52-.09-.15-.22-.26-.38-.34-.16-.08-.33-.12-.52-.12s-.36.04-.52.12c-.16.08-.3.2-.4.36-.11.16-.16.35-.17.59h-1.74c.01-.57.15-1.04.41-1.41.26-.37.6-.65,1.03-.83.43-.18.9-.27,1.41-.27.57,0,1.07.09,1.5.28s.78.46,1.02.81c.25.35.37.78.37,1.27,0,.33-.05.63-.16.88-.11.26-.26.48-.46.68-.2.2-.43.38-.7.54-.22.13-.41.27-.55.42s-.25.31-.32.5-.11.42-.11.7v.14h-1.62Zm.84,2.73c-.28,0-.53-.1-.73-.3s-.3-.44-.3-.72c0-.28.1-.52.3-.72.2-.2.44-.3.73-.3.27,0,.51.1.71.3.2.2.31.44.31.72,0,.19-.05.36-.15.51-.1.16-.22.28-.37.37-.15.09-.32.14-.5.14Z"/>
-</svg>`;
+// ========== ICON DATA URIs (base64) — без конфликтов CSS классов ==========
+const ICON_FREE   = 'data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPHN2ZyBpZD0iX9Ch0LvQvtC5XzEiIGRhdGEtbmFtZT0i0KHQu9C+0LkgMSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB2aWV3Qm94PSIwIDAgMjMgNDUuNTEiPgogIDxkZWZzPgogICAgPHN0eWxlPgogICAgICAuY2xzLTEgewogICAgICAgIGZpbGw6ICM5ODk2OTY7CiAgICAgIH0KCiAgICAgIC5jbHMtMSwgLmNscy0yLCAuY2xzLTMsIC5jbHMtNCB7CiAgICAgICAgc3Ryb2tlLXdpZHRoOiAwcHg7CiAgICAgIH0KCiAgICAgIC5jbHMtMiB7CiAgICAgICAgZmlsbDogIzAwNjlhMjsKICAgICAgfQoKICAgICAgLmNscy0zIHsKICAgICAgICBmaWxsOiAjZmZmOwogICAgICB9CgogICAgICAuY2xzLTQgewogICAgICAgIGZpbGw6ICNkOWQ5ZDk7CiAgICAgIH0KCiAgICAgIC5jbHMtNSB7CiAgICAgICAgb3BhY2l0eTogLjQ2OwogICAgICB9CiAgICA8L3N0eWxlPgogIDwvZGVmcz4KICA8ZyBjbGFzcz0iY2xzLTUiPgogICAgPHBhdGggY2xhc3M9ImNscy0xIiBkPSJtMjAsNDMuNzhjMCwxLjEtMy44MSwxLTguNSwxcy04LjUuMS04LjUtMSwzLjgxLTIsOC41LTIsOC41Ljg5LDguNSwyWiIvPgogIDwvZz4KICA8cmVjdCBjbGFzcz0iY2xzLTQiIHg9IjEiIHk9IjE4Ljc0IiB3aWR0aD0iMjEiIGhlaWdodD0iMTIuNDEiLz4KICA8cmVjdCBjbGFzcz0iY2xzLTMiIHg9IjkuNTkiIHk9IjMxLjE1IiB3aWR0aD0iMy44MiIgaGVpZ2h0PSIxMy4zNiIvPgogIDxwb2x5Z29uIGNsYXNzPSJjbHMtMiIgcG9pbnRzPSIyMyAzMi4xNSAwIDMyLjE1IDAgMTcuNzggMiAxNy43OCAyIDMwLjE1IDIxIDMwLjE1IDIxIDE3Ljc4IDIzIDE3Ljc4IDIzIDMyLjE1Ii8+CiAgPHBhdGggY2xhc3M9ImNscy0yIiBkPSJtMTUuOCw0NS41MUg3LjJ2LTJoMS4zOXYtMTIuMzZoMnYxMi4zNmgxLjgydi0xMi4zNmgydjEyLjM2aDEuMzl2MlptNS4yNS0yNS43N2gtMS45MXYtMmgxLjkxdjJabS0yLjg2LDBoLTEuOTF2LTJoMS45MXYyWm0tMi44NiwwaC03LjY0di0yaDcuNjR2MlptLTguNTksMGgtMS45MXYtMmgxLjkxdjJabS0yLjg2LDBIMXYtMmgyLjg2djJaIi8+Cjwvc3ZnPg==';
+const ICON_BUSY   = 'data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPHN2ZyBpZD0iX9Ch0LvQvtC5XzEiIGRhdGEtbmFtZT0i0KHQu9C+0LkgMSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB2aWV3Qm94PSIwIDAgMjMgNDUuNTEiPgogIDxkZWZzPgogICAgPHN0eWxlPgogICAgICAuY2xzLTEgewogICAgICAgIGZpbGw6ICM5ODk2OTY7CiAgICAgIH0KCiAgICAgIC5jbHMtMSwgLmNscy0yLCAuY2xzLTMsIC5jbHMtNCB7CiAgICAgICAgc3Ryb2tlLXdpZHRoOiAwcHg7CiAgICAgIH0KCiAgICAgIC5jbHMtMyB7CiAgICAgICAgZmlsbDogI2ZmZjsKICAgICAgfQoKICAgICAgLmNscy00IHsKICAgICAgICBmaWxsOiAjZDlkOWQ5OwogICAgICB9CgogICAgICAuY2xzLTUgewogICAgICAgIG9wYWNpdHk6IC40NjsKICAgICAgfQogICAgPC9zdHlsZT4KICA8L2RlZnM+CiAgPGcgY2xhc3M9ImNscy01Ij4KICAgIDxwYXRoIGNsYXNzPSJjbHMtMSIgZD0ibTIwLDQzLjc4YzAsMS4xLTMuODEsMS04LjUsMXMtOC41LjEtOC41LTEsMy44MS0yLDguNS0yLDguNS44OSw4LjUsMloiLz4KICA8L2c+CiAgPHJlY3QgY2xhc3M9ImNscy00IiB4PSIxIiB5PSIxOC43NCIgd2lkdGg9IjIxIiBoZWlnaHQ9IjEyLjQxIi8+CiAgPHJlY3QgY2xhc3M9ImNscy0zIiB4PSI5LjU5IiB5PSIzMS4xNSIgd2lkdGg9IjMuODIiIGhlaWdodD0iMTMuMzYiLz4KICA8cG9seWdvbiBjbGFzcz0iY2xzLTIiIHBvaW50cz0iMjMgMzIuMTUgMCAzMi4xNSAwIDE3Ljc4IDIgMTcuNzggMiAzMC4xNSAyMSAzMC4xNSAyMSAxNy43OCAyMyAxNy43OCAyMyAzMi4xNSIvPgogIDxwYXRoIGNsYXNzPSJjbHMtMiIgZD0ibTE1LjgsNDUuNTFINy4ydi0yaDEuMzl2LTEyLjM2aDJ2MTIuMzZoMS44MnYtMTIuMzZoMnYxMi4zNmgxLjM5djJabTUuMjUtMjUuNzdoLTEuOTF2LTJoMS45MXYyWm0tMi44NiwwaC0xLjkxdi0yaDEuOTF2MlptLTIuODYsMGgtNy42NHYtMmg3LjY0djJabS04LjU5LDBoLTEuOTF2LTJoMS45MXYyWm0tMi44NiwwSDF2LTJoMi44NnYyWiIvPgo8L3N2Zz4=';
+const ICON_SELECT = 'data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPHN2ZyBpZD0iX9Ch0LvQvtC5XzEiIGRhdGEtbmFtZT0i0KHQu9C+0LkgMSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB2aWV3Qm94PSIwIDAgMjMgNDUuNTEiPgogIDxkZWZzPgogICAgPHN0eWxlPgogICAgICAuY2xzLTEgewogICAgICAgIGZpbGw6ICM5ODk2OTY7CiAgICAgIH0KCiAgICAgIC5jbHMtMSwgLmNscy0yLCAuY2xzLTMsIC5jbHMtNCB7CiAgICAgICAgc3Ryb2tlLXdpZHRoOiAwcHg7CiAgICAgIH0KCiAgICAgIC5jbHMtMiB7CiAgICAgICAgZmlsbDogI2ZmZjsKICAgICAgfQoKICAgICAgLmNscy0zIHsKICAgICAgICBmaWxsOiAjYmEwMDAwOwogICAgICB9CgogICAgICAuY2xzLTQgewogICAgICAgIGZpbGw6ICNkOWQ5ZDk7CiAgICAgIH0KCiAgICAgIC5jbHMtNSB7CiAgICAgICAgb3BhY2l0eTogLjQ2OwogICAgICB9CiAgICA8L3N0eWxlPgogIDwvZGVmcz4KICA8ZyBjbGFzcz0iY2xzLTUiPgogICAgPHBhdGggY2xhc3M9ImNscy0xIiBkPSJtMjAsNDMuNzhjMCwxLjEtMy44MSwxLTguNSwxcy04LjUuMS04LjUtMSwzLjgxLTIsOC41LTIsOC41Ljg5LDguNSwyWiIvPgogIDwvZz4KICA8cmVjdCBjbGFzcz0iY2xzLTQiIHg9IjEiIHk9IjE4Ljc0IiB3aWR0aD0iMjEiIGhlaWdodD0iMTIuNDEiLz4KICA8cmVjdCBjbGFzcz0iY2xzLTIiIHg9IjkuNTkiIHk9IjMxLjE1IiB3aWR0aD0iMy44MiIgaGVpZ2h0PSIxMy4zNiIvPgogIDxwb2x5Z29uIGNsYXNzPSJjbHMtMyIgcG9pbnRzPSIyMyAzMi4xNSAwIDMyLjE1IDAgMTcuNzggMiAxNy43OCAyIDMwLjE1IDIxIDMwLjE1IDIxIDE3Ljc4IDIzIDE3Ljc4IDIzIDMyLjE1Ii8+CiAgPHBhdGggY2xhc3M9ImNscy0zIiBkPSJtMTUuOCw0NS41MUg3LjJ2LTJoMS4zOXYtMTIuMzZoMnYxMi4zNmgxLjgydi0xMi4zNmgydjEyLjM2aDEuMzl2MlptNS4yNS0yNS43N2gtMS45MXYtMmgxLjkxdjJabS0yLjg2LDBoLTEuOTF2LTJoMS45MXYyWm0tMi44NiwwaC03LjY0di0yaDcuNjR2MlptLTguNTksMGgtMS45MXYtMmgxLjkxdjJabS0yLjg2LDBIMXYtMmgyLjg2djJaIi8+CiAgPHBvbHlnb24gY2xhc3M9ImNscy0zIiBwb2ludHM9IjEwLjkyIDkuMDUgMy4yOSAxLjQxIDQuNzEgMCAxMC45MiA2LjIyIDE3LjE0IDAgMTguNTYgMS40MSAxMC45MiA5LjA1Ii8+CiAgPHBvbHlnb24gY2xhc3M9ImNscy0zIiBwb2ludHM9IjEwLjkyIDE0LjA1IDMuMjkgNi40MSA0LjcxIDUgMTAuOTIgMTEuMjIgMTcuMTQgNSAxOC41NiA2LjQxIDEwLjkyIDE0LjA1Ii8+Cjwvc3ZnPg==';
+const ICON_FAKE   = 'data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPHN2ZyBpZD0iX9Ch0LvQvtC5XzEiIGRhdGEtbmFtZT0i0KHQu9C+0LkgMSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB2aWV3Qm94PSIwIDAgMjMgNDUuNTEiPgogIDxkZWZzPgogICAgPHN0eWxlPgogICAgICAuY2xzLTEgewogICAgICAgIGZpbGw6ICM5ODk2OTY7CiAgICAgIH0KCiAgICAgIC5jbHMtMSwgLmNscy0yLCAuY2xzLTMsIC5jbHMtNCB7CiAgICAgICAgc3Ryb2tlLXdpZHRoOiAwcHg7CiAgICAgIH0KCiAgICAgIC5jbHMtMiB7CiAgICAgICAgZmlsbDogI2ZmZjsKICAgICAgfQoKICAgICAgLmNscy0zIHsKICAgICAgICBmaWxsOiAjZDlkOWQ5OwogICAgICB9CgogICAgICAuY2xzLTQgewogICAgICAgIGZpbGw6ICM4YThhOGE7CiAgICAgIH0KCiAgICAgIC5jbHMtNSB7CiAgICAgICAgb3BhY2l0eTogLjQ2OwogICAgICB9CiAgICA8L3N0eWxlPgogIDwvZGVmcz4KICA8ZyBjbGFzcz0iY2xzLTUiPgogICAgPHBhdGggY2xhc3M9ImNscy0xIiBkPSJtMjAsNDMuNzhjMCwxLjEtMy44MSwxLTguNSwxcy04LjUuMS04LjUtMSwzLjgxLTIsOC41LTIsOC41Ljg5LDguNSwyWiIvPgogIDwvZz4KICA8cmVjdCBjbGFzcz0iY2xzLTMiIHg9IjEiIHk9IjE4Ljc0IiB3aWR0aD0iMjEiIGhlaWdodD0iMTIuNDEiLz4KICA8cmVjdCBjbGFzcz0iY2xzLTIiIHg9IjkuNTkiIHk9IjMxLjE1IiB3aWR0aD0iMy44MiIgaGVpZ2h0PSIxMy4zNiIvPgogIDxwb2x5Z29uIGNsYXNzPSJjbHMtNCIgcG9pbnRzPSIyMyAzMi4xNSAwIDMyLjE1IDAgMTcuNzggMiAxNy43OCAyIDMwLjE1IDIxIDMwLjE1IDIxIDE3Ljc4IDIzIDE3Ljc4IDIzIDMyLjE1Ii8+CiAgPHBhdGggY2xhc3M9ImNscy00IiBkPSJtMTUuOCw0NS41MUg3LjJ2LTJoMS4zOXYtMTIuMzZoMnYxMi4zNmgxLjgydi0xMi4zNmgydjEyLjM2aDEuMzl2MlptNS4yNS0yNS43N2gtMS45MXYtMmgxLjkxdjJabS0yLjg2LDBoLTEuOTF2LTJoMS45MXYyWm0tMi44NiwwaC03LjY0di0yaDcuNjR2MlptLTguNTksMGgtMS45MXYtMmgxLjkxdjJabS0yLjg2LDBIMXYtMmgyLjg2djJaIi8+CiAgPHBhdGggY2xhc3M9ImNscy00IiBkPSJtMTAuNDYsMjYuNjl2LS4xNGMwLS41LjA1LS44OS4xMy0xLjE5LjA5LS4zLjIxLS41My4zOC0uNzIuMTctLjE4LjM3LS4zNS42MS0uNDkuMTgtLjExLjMzLS4yMy40Ny0uMzUuMTQtLjEyLjI1LS4yNi4zMy0uNDEuMDgtLjE1LjEyLS4zMi4xMi0uNSwwLS4yLS4wNS0uMzctLjE0LS41Mi0uMDktLjE1LS4yMi0uMjYtLjM4LS4zNC0uMTYtLjA4LS4zMy0uMTItLjUyLS4xMnMtLjM2LjA0LS41Mi4xMmMtLjE2LjA4LS4zLjItLjQuMzYtLjExLjE2LS4xNi4zNS0uMTcuNTloLTEuNzRjLjAxLS41Ny4xNS0xLjA0LjQxLTEuNDEuMjYtLjM3LjYtLjY1LDEuMDMtLjgzLjQzLS4xOC45LS4yNywxLjQxLS4yNy41NywwLDEuMDcuMDksMS41LjI4cy43OC40NiwxLjAyLjgxYy4yNS4zNS4zNy43OC4zNywxLjI3LDAsLjMzLS4wNS42My0uMTYuODgtLjExLjI2LS4yNi40OC0uNDYuNjgtLjIuMi0uNDMuMzgtLjcuNTQtLjIyLjEzLS40MS4yNy0uNTUuNDJzLS4yNS4zMS0uMzIuNS0uMTEuNDItLjExLjd2LjE0aC0xLjYyWm0uODQsMi43M2MtLjI4LDAtLjUzLS4xLS43My0uM3MtLjMtLjQ0LS4zLS43MmMwLS4yOC4xLS41Mi4zLS43Mi4yLS4yLjQ0LS4zLjczLS4zLjI3LDAsLjUxLjEuNzEuMy4yLjIuMzEuNDQuMzEuNzIsMCwuMTktLjA1LjM2LS4xNS41MS0uMS4xNi0uMjIuMjgtLjM3LjM3LS4xNS4wOS0uMzIuMTQtLjUuMTRaIi8+Cjwvc3ZnPg==';
 
 const ICON_W = 23, ICON_H = 46;
 
-function makeLeafletIcon(svgStr){
-  return L.divIcon({className:'',html:svgStr,iconSize:[ICON_W,ICON_H],iconAnchor:[ICON_W/2,ICON_H]});
+function makeLeafletIcon(uri){
+  const html = `<img src="${uri}" width="${ICON_W}" height="${ICON_H}" style="display:block;">`;
+  return L.divIcon({className:'',html,iconSize:[ICON_W,ICON_H],iconAnchor:[ICON_W/2,ICON_H]});
+}
+
+function makeYandexEl(uri){
+  const img = document.createElement('img');
+  img.src = uri;
+  img.width = ICON_W;
+  img.height = ICON_H;
+  img.style.cssText = 'display:block;cursor:pointer;';
+  return img;
 }
 
 const DISTRICT_COLORS = {
@@ -578,21 +445,22 @@ function closeCard(){
 
 function setMarkerSelected(bb){
   if(!bb) return;
-  // Leaflet
   if(bb.__marker) bb.__marker.setIcon(makeLeafletIcon(ICON_SELECT));
-  // Yandex
-  if(bb.__marker_el) bb.__marker_el.innerHTML = ICON_SELECT;
+  if(bb.__marker_img) bb.__marker_img.src = ICON_SELECT;
 }
 function resetMarkerIcon(bb){
   if(!bb) return;
-  const st=getStatus(bb);
-  const icon = st.busy ? ICON_BUSY : ICON_FREE;
-  if(bb.__marker) bb.__marker.setIcon(makeLeafletIcon(icon));
-  if(bb.__marker_el) bb.__marker_el.innerHTML = icon;
+  const uri = getStatus(bb).busy ? ICON_BUSY : ICON_FREE;
+  if(bb.__marker) bb.__marker.setIcon(makeLeafletIcon(uri));
+  if(bb.__marker_img) bb.__marker_img.src = uri;
 }
 function centerMarker(bb){
   if(!map) return;
-  map.flyTo([bb.lat, bb.lon], Math.max(map.getZoom(), 14), {duration:0.5});
+  if(window.__engine === 'yandex'){
+    map.update({location:{center:[bb.lon, bb.lat], zoom: Math.max(14, map.zoom), duration: 400}});
+  } else {
+    map.flyTo([bb.lat, bb.lon], Math.max(map.getZoom(), 14), {duration:0.5});
+  }
 }
 
 // step 1 → 2
@@ -835,12 +703,14 @@ async function initMapYandex(key){
 
   BILLBOARDS.forEach(bb=>{
     const st=getStatus(bb);
-    const el=document.createElement('div');
-    el.innerHTML=st.busy?ICON_BUSY:ICON_FREE;
-    el.style.cssText='cursor:pointer;width:23px;height:46px;';
-    el.addEventListener('click',(e)=>{e.stopPropagation();openCard(bb);});
-    bb.__marker_el=el;
-    bb.__marker_ym=new YMapMarker({coordinates:[bb.lon,bb.lat]},el);
+    const img = makeYandexEl(st.busy ? ICON_BUSY : ICON_FREE);
+    img.addEventListener('click',(e)=>{e.stopPropagation();openCard(bb);});
+    bb.__marker_img = img;
+    const wrapper = document.createElement('div');
+    wrapper.style.cssText='cursor:pointer;';
+    wrapper.appendChild(img);
+    bb.__marker_el = wrapper;
+    bb.__marker_ym=new YMapMarker({coordinates:[bb.lon,bb.lat]},wrapper);
     map.addChild(bb.__marker_ym);
   });
 
@@ -876,6 +746,17 @@ async function startMap(){
   } else {
     await initMapOSM();
   }
+  // обновляем иконки после загрузки живых данных из таблицы
+  refreshAllMarkers();
+}
+
+function refreshAllMarkers(){
+  BILLBOARDS.forEach(bb=>{
+    if(bb===activeMarkerBb) return;
+    const uri = getStatus(bb).busy ? ICON_BUSY : ICON_FREE;
+    if(bb.__marker) bb.__marker.setIcon(makeLeafletIcon(uri));
+    if(bb.__marker_img) bb.__marker_img.src = uri;
+  });
 }
 
 document.getElementById('btnYandex').addEventListener('click',()=>{
@@ -893,13 +774,7 @@ startMap();
 // auto-refresh every 5 min
 setInterval(async()=>{
   await loadLiveData();
-  BILLBOARDS.forEach(bb=>{
-    if(!bb.__marker) return;
-    const isActive=bb===activeMarkerBb;
-    if(isActive) return; // don't touch selected
-    const st=getStatus(bb);
-    bb.__marker.setIcon(makeLeafletIcon(st.busy?ICON_BUSY:ICON_FREE));
-  });
+  refreshAllMarkers();
 },5*60*1000);
 </script>
 </body>
