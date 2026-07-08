@@ -316,6 +316,10 @@ const ICON_FREE   = `<?xml version="1.0" encoding="UTF-8"?>
         stroke-width: 0px;
       }
 
+      .cls-2 {
+        fill: #0069a2;
+      }
+
       .cls-3 {
         fill: #fff;
       }
@@ -496,14 +500,17 @@ let activeDistrictEl = document.querySelector('[data-d=""]');
 function filterDistrict(val, el){
   document.querySelectorAll('nav.districts a').forEach(a=>a.classList.remove('active'));
   el.classList.add('active');
-  activeDistrictEl = el;
   BILLBOARDS.forEach(bb=>{
-    if(!bb.__marker) return;
     const show = !val || bb.district===val;
-    if(window.__engine==='osm' && markersLayer){
+    // Leaflet
+    if(bb.__marker && markersLayer){
       const onMap = markersLayer.hasLayer(bb.__marker);
       if(show && !onMap) markersLayer.addLayer(bb.__marker);
       if(!show && onMap) markersLayer.removeLayer(bb.__marker);
+    }
+    // Yandex
+    if(bb.__marker_el && bb.__marker_el.parentElement){
+      bb.__marker_el.parentElement.style.display = show ? '' : 'none';
     }
   });
 }
@@ -571,12 +578,17 @@ function closeCard(){
 
 function setMarkerSelected(bb){
   if(!bb) return;
+  // Leaflet
   if(bb.__marker) bb.__marker.setIcon(makeLeafletIcon(ICON_SELECT));
+  // Yandex
+  if(bb.__marker_el) bb.__marker_el.innerHTML = ICON_SELECT;
 }
 function resetMarkerIcon(bb){
-  if(!bb||!bb.__marker) return;
+  if(!bb) return;
   const st=getStatus(bb);
-  bb.__marker.setIcon(makeLeafletIcon(st.busy ? ICON_BUSY : ICON_FREE));
+  const icon = st.busy ? ICON_BUSY : ICON_FREE;
+  if(bb.__marker) bb.__marker.setIcon(makeLeafletIcon(icon));
+  if(bb.__marker_el) bb.__marker_el.innerHTML = icon;
 }
 function centerMarker(bb){
   if(!map) return;
