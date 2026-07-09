@@ -198,7 +198,7 @@ footer .engine-toggle button:not(.active):hover{color:#fff;}
 <div class="wrap">
 
 <header>
-  <div class="brand">ЩИТЫ<br style="display:none" class="mob-br"> БРЯНСКА</div>
+  <div class="brand">ЩИТЫ<br style="display:none" class="mob-br"> БРЯНСКА (test v1.1.5)</div>
   <nav class="districts" id="districtNav">
     <a href="#" data-d="" class="active">Все районы</a>
   </nav>
@@ -256,6 +256,10 @@ footer .engine-toggle button:not(.active):hover{color:#fff;}
       <div class="step" id="step4">
         <p style="font-size:13px;color:rgba(255,255,255,.8);">Укажите свой номер телефона или почту для подтверждения брони:</p>
         <div class="field-group">
+          <label class="field-label">Имя (необязательно)</label>
+          <input class="field-input" type="text" id="clientName" placeholder="Иван Иванов">
+        </div>
+        <div class="field-group">
           <label class="field-label">Телефон</label>
           <input class="field-input" type="tel" id="clientPhone" placeholder="+7 000 000-00-00">
         </div>
@@ -285,7 +289,7 @@ footer .engine-toggle button:not(.active):hover{color:#fff;}
 
 <footer>
   <div class="footer-left">
-    Есть вопросы? <a href="mailto:chek.kek@gmail.com">Напишите нам  test build v1.1.4</a>
+    Есть вопросы? <a href="mailto:chek.kek@gmail.com">Напишите нам</a>
   </div>
   <div class="engine-toggle">
     <button id="btnYandex">ЯНДЕКС</button>
@@ -443,6 +447,7 @@ function openCard(bb){
 
   // reset steps
   setStep(1);
+  document.getElementById('clientName').value='';
   document.getElementById('clientPhone').value='';
   document.getElementById('clientEmail').value='';
   document.getElementById('consentCheck').checked=false;
@@ -517,7 +522,7 @@ document.getElementById('btnSubmit').addEventListener('click', async()=>{
     district: activeBb.district,
     from: calState.from,
     to: calState.to,
-    name: '',
+    name: document.getElementById('clientName').value.trim(),
     phone: document.getElementById('clientPhone').value.trim(),
     email: document.getElementById('clientEmail').value.trim(),
     created_at: new Date().toISOString()
